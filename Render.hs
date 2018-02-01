@@ -5,6 +5,7 @@ import Graphics.Gloss.Data.Picture
 import Graphics.Gloss.Game (png, boundingBox, Size)
 
 import Data.Matrix
+import Data.Maybe
 
 import Common
 import World
@@ -14,7 +15,7 @@ render world =  pictures [gf]
     where gf = renderGameField (gameField world) (selected world)
 
 
-renderGameField :: Matrix Square -> Coord -> Picture
+renderGameField :: Matrix Square -> Maybe Coord -> Picture
 renderGameField matrix selec = translate xOffset yOffset gameField 
     where gameField :: Picture    
           gameField = pictures (squareToPic <$> toList matrix)
@@ -33,8 +34,9 @@ renderGameField matrix selec = translate xOffset yOffset gameField
                   fy = fromIntegral y :: Float
           
           squareToPic :: Square -> Picture
-          squareToPic (Square coord _ _) | coord == selec = 
-            trans selec (scale blankTile)
+          squareToPic (Square coord _ _) 
+            | isJust selec && coord == fromJust (selec) = 
+                trans coord (scale blankTile)
           squareToPic (Square coord pic Nothing) = trans coord (scale pic)
           squareToPic (Square coord pic (Just unit)) = 
             pictures [

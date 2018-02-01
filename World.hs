@@ -9,7 +9,7 @@ import Common
 
 data World = World {
     gameField :: Matrix Square,
-    selected :: Coord
+    selected :: Maybe Coord
 } 
 
 data Square = Square Coord Picture (Maybe Unit) deriving (Show)
@@ -17,7 +17,7 @@ data Square = Square Coord Picture (Maybe Unit) deriving (Show)
 data Unit = Unit deriving (Show)
 
 initialState :: World
-initialState = World {gameField = allGrass, selected = (0,0)}
+initialState = World {gameField = allGrass, selected = Nothing}
     where allGrass :: Matrix Square
           allGrass = matrix worldSizeHorizontal 
                             worldSizeVertical

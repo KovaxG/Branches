@@ -29,7 +29,8 @@ backgroundColor = black
 
 
 eventHandler :: Event -> World -> World
-eventHandler (EventMotion (fx, fy)) w = w {selected = (x+1, y+1)}
+eventHandler (EventKey (MouseButton LeftButton) Down _ (fx,fy)) world = 
+    world {selected = Just (x+1, y+1)}
     where x = round (fx + gameFieldWidth  / 2) `div` round pWidth
           y = round (fy + gameFieldHeight / 2) `div` round pHeight
 eventHandler e w = trace (show e) w
