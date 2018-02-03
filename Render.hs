@@ -13,17 +13,18 @@ import World
 render :: World -> Picture
 render world =  pictures [ Translate 0 (infoBarHeight/2) gf, 
                            Translate 0 (-gameFieldHeight/2) ib]
-    where gf = renderGameField (gameField world) (selected world)
+    where gf = renderGameField (gameField world)
           ib = renderInfoBar
     
     
 renderInfoBar :: Picture
-renderInfoBar = color (greyN 0.5) body
-    where body = Polygon $ rectanglePath infoBarWidth infoBarHeight
+renderInfoBar = pictures [body]
+    where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
+          body = color (greyN 0.5) rect 
 
 
-renderGameField :: Matrix Square -> Maybe Coord -> Picture
-renderGameField matrix selec = translate xOffset yOffset gameField 
+renderGameField :: Matrix Square -> Picture
+renderGameField matrix = translate xOffset yOffset gameField 
     where gameField :: Picture    
           gameField = pictures (squareToPic <$> toList matrix)
     
@@ -42,11 +43,9 @@ renderGameField matrix selec = translate xOffset yOffset gameField
                   fy = fromIntegral y :: Float
           
           squareToPic :: Square -> Picture
-          squareToPic (Square coord _ _) 
-            | isJust selec && coord == fromJust (selec) = 
-                trans coord (scale blankTile)
-          squareToPic (Square coord pic Nothing) = trans coord (scale pic)
-          squareToPic (Square coord pic (Just unit)) = 
+          squareToPic (Square coord _ _ True) = trans coord (scale blankTile)
+          squareToPic (Square coord pic Nothing _) = trans coord (scale pic)
+          squareToPic (Square coord pic (Just unit) _) = 
             pictures [
               trans coord (scale pic),
               trans coord (scale unitPic)
