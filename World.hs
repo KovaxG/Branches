@@ -12,7 +12,11 @@ data World = World {
     selected :: Maybe Coord
 } 
 
-data Square = Square Coord Picture (Maybe Unit) deriving (Show)
+data Square = Square {
+    coord :: Coord,
+    picture :: Picture,
+    unit :: Maybe Unit
+} deriving (Show)
 
 data Unit = Unit deriving (Show)
 

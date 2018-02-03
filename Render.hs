@@ -11,8 +11,15 @@ import Common
 import World
 
 render :: World -> Picture
-render world =  pictures [gf]
+render world =  pictures [ Translate 0 (infoBarHeight/2) gf, 
+                           Translate 0 (-gameFieldHeight/2) ib]
     where gf = renderGameField (gameField world) (selected world)
+          ib = renderInfoBar
+    
+    
+renderInfoBar :: Picture
+renderInfoBar = color (greyN 0.5) body
+    where body = Polygon $ rectanglePath infoBarWidth infoBarHeight
 
 
 renderGameField :: Matrix Square -> Maybe Coord -> Picture
@@ -20,6 +27,7 @@ renderGameField matrix selec = translate xOffset yOffset gameField
     where gameField :: Picture    
           gameField = pictures (squareToPic <$> toList matrix)
     
+          -- Note: Images are drawn in the center of the coordinate
           xOffset = -(gameFieldWidth /2) - (pWidth /2) :: Float
           yOffset = -(gameFieldHeight/2) - (pHeight/2) :: Float
           

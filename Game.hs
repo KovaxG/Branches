@@ -31,8 +31,10 @@ backgroundColor = black
 eventHandler :: Event -> World -> World
 eventHandler (EventKey (MouseButton LeftButton) Down _ (fx,fy)) world = 
     world {selected = Just (x+1, y+1)}
-    where x = round (fx + gameFieldWidth  / 2) `div` round pWidth
-          y = round (fy + gameFieldHeight / 2) `div` round pHeight
+    where x = round (fx + offset) `div` round pWidth
+              where offset = gameFieldWidth / 2
+          y = round (fy + offset) `div` round pHeight
+              where offset = (gameFieldHeight/2) - (infoBarHeight/2)
 eventHandler e w = trace (show e) w
 
 

@@ -7,11 +7,18 @@ type Coord = (Int, Int)
 
 displayWidth  = 600 :: Int
 displayHeight = 600 :: Int
-gameFieldWidth  = 600 :: Float
-gameFieldHeight = 600 :: Float
-framesPerSecond = 30 :: Int
+
+gameFieldWidth  = fromIntegral displayWidth  - infoBarHeight :: Float
+gameFieldHeight = fromIntegral displayHeight - infoBarHeight :: Float
+
+infoBarWidth  = fromIntegral displayWidth :: Float
+infoBarHeight = 150 :: Float
+
 worldSizeHorizontal = 6 :: Int
 worldSizeVertical   = 6 :: Int
+
+framesPerSecond = 30 :: Int
+
 
 
 pWidth  = gameFieldWidth  / horizontalTileNr :: Float
