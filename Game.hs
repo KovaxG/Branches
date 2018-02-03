@@ -31,8 +31,13 @@ backgroundColor = black
 
 eventHandler :: Event -> World -> World
 eventHandler (EventKey (MouseButton LeftButton) Down _ (fx,fy)) world = 
-    world {gameField = safeSetElem selectSquare (x, y) clearedField}
-    where x = 1 + round (fx + offset) `div` round pWidth
+    world { gameField = safeSetElem selectSquare (x, y) clearedField,
+            info = maybeSquareToMaybeInfo $ safeGet x y clearedField 
+          }  
+    where clearedField :: Matrix Square
+          clearedField = clearSelection $ gameField world
+    
+          x = 1 + round (fx + offset) `div` round pWidth
               where offset = gameFieldWidth / 2
           y = 1 + round (fy + offset) `div` round pHeight
               where offset = (gameFieldHeight/2) - (infoBarHeight/2)    
@@ -40,13 +45,15 @@ eventHandler (EventKey (MouseButton LeftButton) Down _ (fx,fy)) world =
           selectSquare :: Square -> Square
           selectSquare s = s {selected = True}
           
-          clearSelected :: Matrix Square -> Matrix Square
-          clearSelected = fmap $ \s -> s {selected = False}
+          maybeSquareToMaybeInfo = maybe Nothing $ \s -> Just $ Info {square = s}
+
+eventHandler (EventKey (SpecialKey KeySpace) Down _ _) world = 
+    world { gameField = clearedField,
+            info = Nothing
+          }
+    where clearedField :: Matrix Square
+          clearedField = clearSelection $ gameField world
           
-          clearedField :: Matrix Square
-          clearedField = clearSelected $ gameField world
-              
-              
 eventHandler e w = trace (show e) w
 
 

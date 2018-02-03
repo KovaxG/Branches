@@ -20,7 +20,7 @@ data Square = Square {
 } deriving (Show)
 
 data Info = Info {
-    name :: String
+    square :: Square
 }
 
 data Unit = Unit deriving (Show)
@@ -42,3 +42,14 @@ initialState = World { gameField = allGrass,
             | sum `mod` 4 == 2 = Square (x, y) waterTile Nothing False
             | otherwise        = Square (x, y) treeTile  Nothing False
             where sum = (x ^ y) ^ x * (x - y ^ y)
+
+
+clearSelection :: Matrix Square -> Matrix Square
+clearSelection = fmap $ \s -> s {selected = False}
+
+
+safeSetElem :: (a -> a) -> (Int, Int) -> Matrix a -> Matrix a
+safeSetElem f (x, y) originalMatrix = maybe outOfBounds changeElem maybeNewValue
+    where maybeNewValue = f <$> safeGet x y originalMatrix
+          outOfBounds = originalMatrix
+          changeElem a = setElem a (x, y) originalMatrix

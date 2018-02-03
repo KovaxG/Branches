@@ -13,14 +13,21 @@ import World
 render :: World -> Picture
 render world =  pictures [ Translate 0 (infoBarHeight/2) gf, 
                            Translate 0 (-gameFieldHeight/2) ib]
-    where gf = renderGameField (gameField world)
-          ib = renderInfoBar
+    where gf = renderGameField $ gameField world
+          ib = renderInfoBar $ info world
     
     
-renderInfoBar :: Picture
-renderInfoBar = pictures [body]
+renderInfoBar :: Maybe Info -> Picture
+renderInfoBar (Just inf) = pictures [body, text]
     where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
           body = color (greyN 0.5) rect 
+          text = Translate (-infoBarWidth/2) 0 $ Scale 0.1 0.1 $ Text $ show sqr
+          sqr = square inf
+
+renderInfoBar Nothing = pictures [body]
+    where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
+          body = color (greyN 0.5) rect 
+          
 
 
 renderGameField :: Matrix Square -> Picture
