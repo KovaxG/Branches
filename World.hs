@@ -8,26 +8,26 @@ import Data.Matrix
 import Common
 
 data World = World {
-    gameField :: Matrix Square,
-    info :: Maybe Info
+    wGameField :: Matrix Square,
+    wInfo :: Maybe Info
 } 
 
 data Square = Square {
-    coord :: Coord,
-    picture :: Picture,
-    unit :: Maybe Unit,
-    selected :: Bool
+    sCoord :: Coord,
+    sPicture :: Picture,
+    sUnit :: Maybe Unit,
+    sSelected :: Bool
 } deriving (Show)
 
 data Info = Info {
-    square :: Square
-}
+    iSquare :: Square
+} deriving (Show)
 
 data Unit = Unit deriving (Show)
 
 initialState :: World
-initialState = World { gameField = allGrass, 
-                       info = Nothing }
+initialState = World { wGameField = allGrass, 
+                       wInfo = Nothing }
                        
     where allGrass :: Matrix Square
           allGrass = matrix worldSizeHorizontal 
@@ -45,7 +45,7 @@ initialState = World { gameField = allGrass,
 
 
 clearSelection :: Matrix Square -> Matrix Square
-clearSelection = fmap $ \s -> s {selected = False}
+clearSelection = fmap $ \s -> s {sSelected = False}
 
 
 safeSetElem :: (a -> a) -> (Int, Int) -> Matrix a -> Matrix a

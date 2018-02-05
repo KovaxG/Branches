@@ -13,21 +13,26 @@ import World
 render :: World -> Picture
 render world =  pictures [ Translate 0 (infoBarHeight/2) gf, 
                            Translate 0 (-gameFieldHeight/2) ib]
-    where gf = renderGameField $ gameField world
-          ib = renderInfoBar $ info world
+    where gf = renderGameField $ wGameField world
+          ib = renderInfoBar $ wInfo world
     
     
 renderInfoBar :: Maybe Info -> Picture
-renderInfoBar (Just inf) = pictures [body, text]
+renderInfoBar (Just inf) = pictures [body, 
+                                     picTile,
+                                     text]
     where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
           body = color (greyN 0.5) rect 
           text = Translate (-infoBarWidth/2) 0 $ Scale 0.1 0.1 $ Text $ show sqr
-          sqr = square inf
+          sqr = iSquare inf
+          pic = maybe (sPicture sqr) (\_ -> unitPic) (sUnit sqr)
+          picTile = trans pic
+            where trans = Translate (-fDisplayWidth/2 + (width pic) /2) 0
+
 
 renderInfoBar Nothing = pictures [body]
     where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
           body = color (greyN 0.5) rect 
-          
 
 
 renderGameField :: Matrix Square -> Picture
@@ -50,13 +55,11 @@ renderGameField matrix = translate xOffset yOffset gameField
                   fy = fromIntegral y :: Float
           
           squareToPic :: Square -> Picture
-          squareToPic (Square coord _ _ True) = trans coord (scale blankTile)
-          squareToPic (Square coord pic Nothing _) = trans coord (scale pic)
-          squareToPic (Square coord pic (Just unit) _) = 
-            pictures [
-              trans coord (scale pic),
-              trans coord (scale unitPic)
-            ]
+          squareToPic (Square coord pic maybeUnit s) = 
+            pictures $ [background] ++ unit ++ selection
+              where background = trans coord (scale pic)
+                    selection = if s == True then [trans coord blankTile] else []
+                    unit = maybe [] (\_ -> [trans coord (scale unitPic)]) maybeUnit
 
 
 width :: Picture -> Float
