@@ -1,4 +1,11 @@
-module World where
+module World (
+    World (..),
+    Square (..),
+    Unit (..),
+    initialState,
+    clearSelection,
+    safeSetElem
+) where
 
 import Graphics.Gloss.Data.Picture
 
@@ -7,27 +14,27 @@ import Data.Matrix
 
 import Common
 
+
 data World = World {
     wGameField :: Matrix Square,
-    wInfo :: Maybe Info
+    wSelected :: Maybe Square
 } 
+
 
 data Square = Square {
     sCoord :: Coord,
     sPicture :: Picture,
     sUnit :: Maybe Unit,
     sSelected :: Bool
-} deriving (Show)
+} deriving (Show, Eq)
 
-data Info = Info {
-    iSquare :: Square
-} deriving (Show)
 
-data Unit = Unit deriving (Show)
+data Unit = Unit deriving (Show, Eq)
+
 
 initialState :: World
 initialState = World { wGameField = allGrass, 
-                       wInfo = Nothing }
+                       wSelected = Nothing }
                        
     where allGrass :: Matrix Square
           allGrass = matrix worldSizeHorizontal 

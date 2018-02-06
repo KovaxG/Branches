@@ -1,4 +1,6 @@
-module Render (render) where
+module Render (
+    render
+) where
 
 import Graphics.Gloss.Data.Color
 import Graphics.Gloss.Data.Picture
@@ -10,21 +12,21 @@ import Data.Maybe
 import Common
 import World
 
+
 render :: World -> Picture
 render world =  pictures [ Translate 0 (infoBarHeight/2) gf, 
                            Translate 0 (-gameFieldHeight/2) ib]
     where gf = renderGameField $ wGameField world
-          ib = renderInfoBar $ wInfo world
-    
-    
-renderInfoBar :: Maybe Info -> Picture
-renderInfoBar (Just inf) = pictures [body, 
+          ib = renderInfoBar $ wSelected world
+
+
+renderInfoBar :: Maybe Square -> Picture
+renderInfoBar (Just sqr) = pictures [body, 
                                      picTile,
                                      text]
     where rect = Polygon $ rectanglePath infoBarWidth infoBarHeight
           body = color (greyN 0.5) rect 
           text = Translate (-infoBarWidth/2) 0 $ Scale 0.1 0.1 $ Text $ show sqr
-          sqr = iSquare inf
           pic = maybe (sPicture sqr) (\_ -> unitPic) (sUnit sqr)
           picTile = trans pic
             where trans = Translate (-fDisplayWidth/2 + (width pic) /2) 0
@@ -60,11 +62,3 @@ renderGameField matrix = translate xOffset yOffset gameField
               where background = trans coord (scale pic)
                     selection = if s == True then [trans coord blankTile] else []
                     unit = maybe [] (\_ -> [trans coord (scale unitPic)]) maybeUnit
-
-
-width :: Picture -> Float
-width = fst . snd . boundingBox 
-
-
-height :: Picture -> Float
-height = snd . snd . boundingBox
